@@ -1,9 +1,14 @@
 package com.chuyang.springframework.beans.factory.support;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.chuyang.springframework.beans.BeansException;
+import com.chuyang.springframework.beans.PropertyValue;
+import com.chuyang.springframework.beans.PropertyValues;
 import com.chuyang.springframework.beans.factory.config.BeanDefinition;
+import com.chuyang.springframework.beans.factory.config.BeanReference;
 
 import java.lang.reflect.Constructor;
+import java.sql.ResultSet;
 
 /**
  * @author ChuYang
@@ -44,5 +49,22 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     public void setInstantiationStrategy(InstantiationStrategy instantiationStrategy) {
         this.instantiationStrategy = instantiationStrategy;
+    }
+
+    protected void applyPropertyValues(String beanName, Object bean, BeanDefinition beanDefinition) {
+        try {
+            PropertyValues propertyValues = beanDefinition.getPropertyValues();
+            for (PropertyValue propertyValue : propertyValues.getPropertyValues()) {
+                String name = propertyValue.getName();
+                Object value = propertyValue.getValue();
+                if(value instanceof BeanReference){
+                    BeanReference beanReference = (BeanReference) value;
+                    value = getBean(beanReference.getBeanName());
+                }
+                BeanUtil.setFieldValue(bean, name, value);
+            }
+        }catch (Exception e){
+            throw new BeansException("Error setting property values: " + beanName);
+        }
     }
 }
