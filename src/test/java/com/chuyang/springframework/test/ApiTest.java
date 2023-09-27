@@ -1,5 +1,6 @@
 package com.chuyang.springframework.test;
 
+import com.chuyang.springframework.beans.factory.BeanFactory;
 import com.chuyang.springframework.beans.factory.config.BeanDefinition;
 import com.chuyang.springframework.beans.factory.support.DefaultListableBeanFactory;
 import com.chuyang.springframework.beans.factory.support.DefaultSingletonBeanRegistry;
@@ -49,6 +50,8 @@ public class ApiTest {
     public void test_newInstance() throws IllegalAccessException, InstantiationException {
         UserService userService = UserService.class.newInstance();
         System.out.println(userService);
+        Class<BeanFactory> beanFactoryClass = BeanFactory.class;
+        System.out.println(beanFactoryClass);
     }
 
     @Test
